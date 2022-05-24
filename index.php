@@ -1,5 +1,7 @@
 <?php
 
+use Auth\Auth;
+
 //session start
 session_start();
 
@@ -13,15 +15,43 @@ define('DB_NAME', 'project');
 define('DB_USERNAME', 'root');
 define('DB_PASSWORD', '');
 
+
+//mail
+define('MAIL_HOST', 'smtp.gmail.com');
+define('SMTP_AUTH', true);
+define('MAIL_USERNAME', 'onlinephp.attendance@gmail.com');
+define('MAIL_PASSWORD', '');
+define('MAIL_PORT', 587);
+define('SENDER_MAIL', 'onlinephp.attendance@gmail.com');
+define('SENDER_NAME', 'دوره آنلاین php جامع');
+
+
+
+
+
 require_once 'database/DataBase.php';
 require_once 'database/CreateDB.php';
 require_once 'activities/Admin/Admin.php';
+require_once 'activities/Admin/Dashboard.php';
 require_once 'activities/Admin/Category.php';
 require_once 'activities/Admin/Post.php';
 require_once 'activities/Admin/Banner.php';
 require_once 'activities/Admin/User.php';
 require_once 'activities/Admin/Comment.php';
 require_once 'activities/Admin/Menu.php';
+require_once 'activities/Admin/Websetting.php';
+
+
+
+
+//Home
+require_once 'activities/App/Home.php';
+
+
+
+
+//auth
+require_once 'activities/Auth/Auth.php';
 
 
 
@@ -37,6 +67,12 @@ spl_autoload_register(function($className){
         $className = str_replace('\\', DIRECTORY_SEPARATOR, $className);
         include $path . $className . '.php';
 });
+
+
+// $auth = new Auth();
+// $auth->sendMail('onlinephp.attendance@gmail.com', 'تست', '<p>test</p>');
+
+
 
 function jalaliData($date){
         return \Parsidev\Jalali\jdate::forge($date)->format('datetime');
@@ -191,6 +227,9 @@ function dd($var){
 
 
 
+//dashboard
+uri('admin', 'Admin\Dashboard', 'index');
+
 
 // category
 
@@ -251,6 +290,37 @@ uri('admin/menu/update/{id}', 'Admin\Menu', 'update', 'POST');
 uri('admin/menu/delete/{id}', 'Admin\Menu', 'delete');
 
 
+
+//websetting
+uri('admin/websetting', 'Admin\Websetting', 'index');
+uri('admin/websetting/edit', 'Admin\Websetting', 'edit');
+uri('admin/websetting/update', 'Admin\Websetting', 'update', 'POST');
+
+
+
+
+//Auth 
+uri('register', 'Auth\Auth', 'register');
+uri('register/store', 'Auth\Auth', 'registerStore', 'POST');
+uri('activation/{verify_token}', 'Auth\Auth', 'activation');
+uri('login', 'Auth\Auth', 'login');
+uri('check-login', 'Auth\Auth', 'checkLogin', 'POST');
+uri('logout', 'Auth\Auth', 'logout');
+uri('forgot', 'Auth\Auth', 'forgot');
+uri('forgot/request', 'Auth\Auth', 'forgotRequest', 'POST');
+uri('reset-password-form/{forgot_token}', 'Auth\Auth', 'resetPasswordView');
+uri('reset-password/{forgot_token}', 'Auth\Auth', 'resetPassword', "POST");
+
+
+
+
+//app
+
+uri('/', 'App\Home', 'index');
+uri('/home', 'App\Home', 'index');
+uri('/show-post/{id}', 'App\Home', 'show');
+uri('/show-category/{id}', 'App\Home', 'category');
+uri('/comment-store', 'App\Home', 'commentStore', 'POST');
 
 
 
